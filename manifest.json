@@ -1,0 +1,38 @@
+{
+    "name": "Cafeteria ",
+    "short_name": "UNAM",
+    "description": "Plataforma educativa",
+    "lang":"es-mx",
+    "display": "standalone", 
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "orientation": "portrait",
+    "icons":[
+        {
+            "src": "img/icono1.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "img/icono2.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+  "screenshots": [
+    {
+      "src": "img/inicio_cap.png",
+      "sizes": "1484x810",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "img/plan_cap.png",
+      "sizes": "1490x789",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+    ],
+    "id":"/index.html",
+    "start_url": "/index.html"
+}
