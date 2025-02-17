@@ -45,36 +45,45 @@ self.addEventListener('install', function(e) {
     )
 })
 
-// Activación del Service Worker
-self.addEventListener('activate', (event) => {
-    const cacheWhitelist = ['Icecream-Store-PWA'];
+self.addEventListener('activate', function(e) {
     console.log('Service Worker: Activado');
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
+    e.waitUntil()(
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(cacheNames.map(function(thisCacheName) {
+                   if(thisCacheName !== CACHE_NAME) {
+                    console.log('Service Worker: Cache viejo eliminado', thisCacheName);
+                    return caches.delete(thisCacheName);
+                   }
+            }))
         })
-    );
-});
+    )
+})
 
-// Fetch
-self.addEventListener('fetch', (event) => {
-    console.log('Service Worker: Fetch solicitado para', event.request.url);
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                // Devuelve el recurso desde el caché si está disponible
-                if (response) {
+self.addEventListener('fetch', function(e) {
+    console.log('Service Worker: Fetching', e.request.url);
+    
+    e.respondWith(
+        caches.match(e.request).then(function(response) {
+            if(response) {
+                console.log('Cache encontrada', e.request.url);
+                return response;
+            }
+            var requestClone = e.request.clone();
+            fetch(requestClone).then(function(response) {
+                if(!response){
+                    console.log('No se encontro respuesta');
                     return response;
                 }
-                // Si no está en caché, realiza una solicitud de red
-                return fetch(event.request);
+                var responseClone = response.clone();
+                
+                caches.open(CACHE_NAME).then(function(cache) {
+                    cache.put(e.request, responseClone);
+                    return response;
+                });
             })
-            .catch((error) => console.error('Error en la solicitud fetch', error))
-    );
-});
+            .catch(function(err){
+                console.log('Error al hacer fetch', err);
+            })
+        })
+    )
+})
