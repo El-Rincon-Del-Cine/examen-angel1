@@ -35,15 +35,13 @@ var cacheFiles = [
     './img/snacks.jpg'
 ];
 
+//metodo de instalacio del sw e inicia la cache y muestra los archivos que no se pudieron instalar
 self.addEventListener('install', function(e) {
     console.log('Service Worker: Instalando...');
-
     e.waitUntil(
         caches.open(CACHE_NAME)
             .then(async function(cache) {
                 console.log('Service Worker: Caché abierto', CACHE_NAME);
-
-                // Usamos Promise.all con fetch() para ver cuál archivo falla
                 return Promise.all(
                     cacheFiles.map(async (file) => {
                         try {
@@ -67,7 +65,7 @@ self.addEventListener('install', function(e) {
     );
 });
 
-
+//metodo para activar el sw y elimina las cache antiguas
 self.addEventListener('activate', function(e) {
     console.log('Service Worker: Activado');
     e.waitUntil(
@@ -84,6 +82,7 @@ self.addEventListener('activate', function(e) {
     );
 });
 
+//busca la cache donde se encuentra los archivos
 self.addEventListener('fetch', function(e) {
     console.log('Service Worker: Fetching', e.request.url);
 
@@ -113,5 +112,3 @@ self.addEventListener('message', function(event) {
         });
     }
 });
-
-
