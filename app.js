@@ -7,11 +7,12 @@ if ('serviceWorker' in navigator) {
         .then(permission => {
             if (permission === 'granted') {
                 console.log('Permiso de notificaciones concedido');
-
-                // Cuando la página se carga, me dira si deseo permitir notificaciones
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.active.postMessage({ type: 'SHOW_NOTIFICATION' });
-                });
+                
+                document.addEventListener('click', () => {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.active.postMessage({ type: 'SHOW_NOTIFICATION' });
+                    });
+                }, { once: true }); 
             } else {
                 console.warn('Permiso de notificaciones denegado');
             }
