@@ -93,31 +93,3 @@ self.addEventListener('fetch', function(e) {
         })
     )
 })
-
-self.addEventListener('push', function(event) {
-    console.log('Service Worker: Recibió un push');
-
-    // apartado de notificación
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
-        let isWindowFocused = clients.some(client => client.focused);
-        if (isWindowFocused) {
-            event.waitUntil(
-                self.registration.showNotification("La Taverna del Café", {
-                    body: "¡Ven a disfrutar un café recién hecho y pasar un buen momento!",
-                    icon: "./img/icono1.png",
-                    badge: "./img/icono2.png",
-                    vibrate: [200, 100, 200],
-                    data: { url: "./index.html" }
-                })
-            );
-        }
-    });
-});
-
-//acción al dar clic en la notificación
-self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
-    event.waitUntil(
-        clients.openWindow(event.notification.data.url)
-    );
-});
