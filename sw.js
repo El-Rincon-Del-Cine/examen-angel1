@@ -105,16 +105,13 @@ self.addEventListener('fetch', function(e) {
     );
 });
 
-self.addEventListener('message', async event => {
+self.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-        const allClients = await clients.matchAll({ type: 'window', includeUncontrolled: true });
-
-        if (allClients.length > 0) {
-            self.registration.showNotification('La Taverna del café te invita a visitarnos', {
-                body: '¿Sabías que una buena lectura va acompañada de una buena bebida relajante? Descúbrelo',
-                icon: './img/icono1.png'
-            });
-        }
+        self.registration.showNotification('Bienvenido a La Taverna del Café', {
+            body: '¿Sabias que una buena lectura va acompañado de algo relajante?',
+            icon: './img/icono1.png'
+        });
     }
 });
+
 
