@@ -1,9 +1,5 @@
-self.addEventListener('install', (event) => {
-    console.log('Service Worker: Instalado');
-    event.waitUntil(
-        caches.open('cafe')
-            .then((cache) => {
-                return cache.addAll([
+var CACHE_NAME = 'v1';
+var cacheFiles = [
                 './',
                 './index.html',
                 './css/style.css',
@@ -36,14 +32,18 @@ self.addEventListener('install', (event) => {
                 './img/panecillos.jpg',
                 './img/personal.jpg',
                 './img/preparando.jpg',
-                './img/snacks.jpg',
-                './sw.js',
-                './app.js'
-                                       
-                ]);
-            })
-    );
-});
+                './img/snacks.jpg'
+]
+
+self.addEventListener('install', function(e) {
+    console.log('Service Worker: Instalado');
+    e.waitUntil(
+        caches.open(CACHE_NAME).then(function(cache) {
+            console.log('Service Worker: Cache abierto');
+            return cache.addAll(cacheFiles);
+        })
+    )
+})
 
 // Activación del Service Worker
 self.addEventListener('activate', (event) => {
