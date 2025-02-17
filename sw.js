@@ -9,6 +9,8 @@ var cacheFiles = [
                 './galeria.html',
                 './nosotros.html',
                 './contacto.html',
+                './app.js',
+                './sw.js',
                 './img/atendiendo2.jpg',
                 './img/cafe2.jpg',
                 './img/cafe3.jpg',
