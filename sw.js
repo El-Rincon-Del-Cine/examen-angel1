@@ -1,6 +1,15 @@
 var CACHE_NAME = 'v1';
 var cacheFiles = [
-                './',
+                
+]
+
+self.addEventListener('install', (event) => {
+    console.log('Service Worker: Instalado');
+    event.waitUntil(
+        caches.open('Icecream-Store-PWA')
+            .then((cache) => {
+                return cache.addAll([
+                    './',
                 './index.html',
                 './css/style.css',
                 './manifest.json',
@@ -32,58 +41,45 @@ var cacheFiles = [
                 './img/panecillos.jpg',
                 './img/personal.jpg',
                 './img/preparando.jpg',
-                './img/snacks.jpg'
-]
+                './img/snacks.jpg',
+                './sw.js',
+                './app.js'
+                                       
+                ]);
+            })
+    );
+});
 
-self.addEventListener('install', function(e) {
-    console.log('Service Worker: Instalado');
-    e.waitUntil(
-        caches.open(CACHE_NAME).then(function(cache) {
-            console.log('Service Worker: Cache abierto');
-            return cache.addAll(cacheFiles);
-        })
-    )
-})
-
-self.addEventListener('activate', function(e) {
+// Activación del Service Worker
+self.addEventListener('activate', (event) => {
+    const cacheWhitelist = ['Icecream-Store-PWA'];
     console.log('Service Worker: Activado');
-    e.waitUntil()(
-        caches.keys().then(function(cacheNames) {
-            return Promise.all(cacheNames.map(function(thisCacheName) {
-                   if(thisCacheName !== CACHE_NAME) {
-                    console.log('Service Worker: Cache viejo eliminado', thisCacheName);
-                    return caches.delete(thisCacheName);
-                   }
-            }))
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
-    )
-})
+    );
+});
 
-self.addEventListener('fetch', function(e) {
-    console.log('Service Worker: Fetching', e.request.url);
-    
-    e.respondWith(
-        caches.match(e.request).then(function(response) {
-            if(response) {
-                console.log('Archivo encontrado', e.request.url);
-                return response;
-            }
-            var requestClone = e.request.clone();
-            fetch(requestClone).then(function(response) {
-                if(!response){
-                    console.log('No se encontro el archivo en la cache');
+// Fetch
+self.addEventListener('fetch', (event) => {
+    console.log('Service Worker: Fetch solicitado para', event.request.url);
+    event.respondWith(
+        caches.match(event.request)
+            .then((response) => {
+                // Devuelve el recurso desde el caché si está disponible
+                if (response) {
                     return response;
                 }
-                var responseClone = response.clone();
-                
-                caches.open(CACHE_NAME).then(function(cache) {
-                    cache.put(e.request, responseClone);
-                    return response;
-                });
+                // Si no está en caché, realiza una solicitud de red
+                return fetch(event.request);
             })
-            .catch(function(err){
-                console.log('Error al hacer fetch', err);
-            })
-        })
-    )
-})
+            .catch((error) => console.error('Error en la solicitud fetch', error))
+    );
+});
