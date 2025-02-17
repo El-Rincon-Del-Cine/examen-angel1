@@ -1,7 +1,7 @@
 {
-    "name": "Cafeteria ",
-    "short_name": "UNAM",
-    "description": "Plataforma educativa",
+    "name": "La Taverna del café",
+    "short_name": "Café",
+    "description": "Tu lugar para una buena lectura y una bebida relajante",
     "lang":"es-mx",
     "display": "standalone", 
     "background_color": "#ffffff",
@@ -21,18 +21,18 @@
     ],
   "screenshots": [
     {
-      "src": "img/inicio_cap.png",
-      "sizes": "1484x810",
+      "src": "img/pc.PNG",
+      "sizes": "1348x606",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "img/plan_cap.png",
-      "sizes": "1490x789",
+      "src": "img/movil.png",
+      "sizes": "686x1280",
       "type": "image/png",
       "form_factor": "narrow"
     }
     ],
-    "id":"/index.html",
+    "id": "/index.html",
     "start_url": "/index.html"
 }

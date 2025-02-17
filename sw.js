@@ -1,47 +1,44 @@
-var CACHE_NAME = 'v1';
+//aquí en mis variables guardo el nombre de mi cache y los archivos que voy a guardar
+var CACHE_NAME = 'v2';
 var cacheFiles = [
                 './',
                 './index.html',
-                './estilos.css',
+                './css/style.css',
                 './manifest.json',
-                './oferta_educativa.html',
-                './ofertaE.css',
-                './plan.css',
-                './plan.html',
-                './Ubicacion.html',
-                './Contactanos.html',
-                './img/1.jpg',
-                './img/2.jpg',
-                './img/3.jpg',
-                './img/4.jpg',
-                './img/5.jpg',
-                './img/actitud.png',
-                './img/beca.png',
-                './img/benemerita.png',
-                './img/conocimiento.png',
-                './img/escudo.png',
-                './img/escuelasuperior.png',
-                './img/graduacion.png',
-                './img/icon.png',
+                './productos.html',
+                './galeria.html',
+                './nosotros.html',
+                './contacto.html',
+                './img/atendiendo2.jpg',
+                './img/cafe2.jpg',
+                './img/cafe3.jpg',
+                './img/cafe4.jpg',
+                './img/cafe1.jpg',
                 './img/icono1.png',
                 './img/icono2.png',
-                './img/inicio_cap.png',
-                './img/itson.png',
-                './img/logo_unam.png',
-                './img/mujer-removebg-preview.png',
-                './img/multitalentoso.png',
-                './img/papeleria.png',
-                './img/par_students-removebg-preview.png',
-                './img/plan_cap.png',
-                './img/planeta-tierra.png',
-                './img/profesional.jpg',
-                './img/public-service.png',
-                './img/Software.jpg',
-                './img/tia.jpg',
-                './img/unam.jpg',
-                './img/valor.png',
+                './img/movil.png',
+                './img/pc.PNG',
+                './img/cafeteria.jpg',
+                './img/capuccino.jpg',
+                './img/latte.jpg',
+                './img/chocolate-caliente.jpg',
+                './img/contacto.jpg',
+                './img/croissant.jpg',
+                './img/espresso.jpeg',
+                './img/frappe.jpg',
+                './img/gal1.jpg',
+                './img/gal2.jpg',
+                './img/granos.jpg',
+                './img/hero.jpg',
+                './img/leyendo.jpeg',
+                './img/mokaccino.jpg',
+                './img/panecillos.jpg',
+                './img/personal.jpg',
+                './img/preparando.jpg',
+                './img/snacks.jpg'
 ]
 
+//instalación del SW en mi página
 self.addEventListener('install', function(e) {
     console.log('Service Worker: Instalado');
     e.waitUntil(
@@ -52,6 +49,7 @@ self.addEventListener('install', function(e) {
     )
 })
 
+//Activa el cacheo o en caso contrario me reemplaza el anterior
 self.addEventListener('activate', function(e) {
     console.log('Service Worker: Activado');
     e.waitUntil()(
@@ -66,19 +64,20 @@ self.addEventListener('activate', function(e) {
     )
 })
 
+//fetch: busqueda de archivos en la cache
 self.addEventListener('fetch', function(e) {
     console.log('Service Worker: Fetching', e.request.url);
     
     e.respondWith(
         caches.match(e.request).then(function(response) {
             if(response) {
-                console.log('Cache encontrada', e.request.url);
+                console.log('Archivo encontrado', e.request.url);
                 return response;
             }
             var requestClone = e.request.clone();
             fetch(requestClone).then(function(response) {
                 if(!response){
-                    console.log('No se encontro respuesta');
+                    console.log('No se encontro el archivo en la cache');
                     return response;
                 }
                 var responseClone = response.clone();
@@ -94,3 +93,31 @@ self.addEventListener('fetch', function(e) {
         })
     )
 })
+
+self.addEventListener('push', function(event) {
+    console.log('Service Worker: Recibió un push');
+
+    // apartado de notificación
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
+        let isWindowFocused = clients.some(client => client.focused);
+        if (isWindowFocused) {
+            event.waitUntil(
+                self.registration.showNotification("La Taverna del Café", {
+                    body: "¡Ven a disfrutar un café recién hecho y pasar un buen momento!",
+                    icon: "./img/icono1.png",
+                    badge: "./img/icono2.png",
+                    vibrate: [200, 100, 200],
+                    data: { url: "./index.html" }
+                })
+            );
+        }
+    });
+});
+
+//acción al dar clic en la notificación
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow(event.notification.data.url)
+    );
+});
