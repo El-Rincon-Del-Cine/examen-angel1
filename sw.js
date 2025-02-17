@@ -40,7 +40,7 @@ self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
             console.log('Service Worker: Cache abierto');
-            return cache.addAll(cacheFiles);
+            return Promise.all(cacheFiles);
         })
     )
 })
