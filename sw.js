@@ -104,19 +104,12 @@ self.addEventListener('fetch', function(e) {
     );
 });
 
-self.addEventListener('push', event => {
-    if (event.data) {
-        const data = event.data.json();
-        console.log('Service Worker: Notificación push recibida', data);
-
-        const options = {
-            body: data.body || '¿Sabías que una buena lectura va acompañada de algo relajante?',
-            icon: data.icon || './img/icono1.png',
-            badge: data.badge || './img/icono1.png'
-        };
-
-        event.waitUntil(
-            self.registration.showNotification(data.title || 'Bienvenido a La Taverna del Café', options)
-        );
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+        self.registration.showNotification('Bienvenido a La Taverna del Café', {
+            body: '¿Sabías que una buena lectura va acompañada de algo relajante?',
+            icon: './img/icono1.png',
+            badge: './img/icono1.png'
+        });
     }
 });
