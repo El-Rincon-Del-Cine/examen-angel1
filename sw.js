@@ -3,7 +3,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('cafe')
             .then((cache) => {
-                return Promise.all([
+                return cache.addAll([
                 './',
                 './index.html',
                 './css/style.css',
