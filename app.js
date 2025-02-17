@@ -7,15 +7,24 @@ if ('serviceWorker' in navigator) {
         .then(permission => {
             if (permission === 'granted') {
                 console.log('Permiso de notificaciones concedido');
-                
-                document.addEventListener('click', () => {
-                    navigator.serviceWorker.ready.then(registration => {
-                        registration.active.postMessage({ type: 'SHOW_NOTIFICATION' });
-                    });
-                }, { once: true }); 
             } else {
                 console.warn('Permiso de notificaciones denegado');
             }
         })
         .catch(error => console.error('Error al registrar el Service Worker:', error));
 }
+
+function enviarNotificacion() {
+    if (Notification.permission === 'granted') {
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration) {
+                registration.showNotification('Título de la Notificación', {
+                    body: 'Este es el contenido de la notificación local.',
+                    icon: './img/icono1.png'
+                });
+            }
+        });
+    }
+}
+
+document.getElementById('btnNotificar').addEventListener('click', enviarNotificacion);
