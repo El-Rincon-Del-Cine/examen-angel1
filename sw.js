@@ -1,5 +1,4 @@
-//aquí en mis variables guardo el nombre de mi cache y los archivos que voy a guardar
-var CACHE_NAME = 'v2';
+var CACHE_NAME = 'v1';
 var cacheFiles = [
                 './',
                 './index.html',
@@ -9,8 +8,6 @@ var cacheFiles = [
                 './galeria.html',
                 './nosotros.html',
                 './contacto.html',
-                './app.js',
-                './sw.js',
                 './img/atendiendo2.jpg',
                 './img/cafe2.jpg',
                 './img/cafe3.jpg',
