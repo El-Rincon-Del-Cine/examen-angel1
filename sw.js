@@ -15,8 +15,6 @@ var cacheFiles = [
                 './img/cafe1.jpg',
                 './img/icono1.png',
                 './img/icono2.png',
-                './img/movil.png',
-                './img/pc.PNG',
                 './img/cafeteria.jpg',
                 './img/capuccino.jpg',
                 './img/latte.jpg',
