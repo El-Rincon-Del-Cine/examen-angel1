@@ -1,15 +1,10 @@
-var CACHE_NAME = 'v1';
-var cacheFiles = [
-                
-]
-
 self.addEventListener('install', (event) => {
     console.log('Service Worker: Instalado');
     event.waitUntil(
-        caches.open('Icecream-Store-PWA')
+        caches.open('cafe')
             .then((cache) => {
-                return cache.addAll([
-                    './',
+                return Promise.all([
+                './',
                 './index.html',
                 './css/style.css',
                 './manifest.json',
