@@ -1,18 +1,27 @@
-document.getElementById('notificar').addEventListener('click', async () => {
-    // Verifica si el navegador soporta notificaciones
-    if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-        alert("Las notificaciones no son compatibles con tu navegador.");
-        return;
-    }
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js') 
+            .then((registration) => {
+                console.log('Service Worker registrado con éxito:', registration.scope);
 
-    // Pedir permiso al usuario
-    const permiso = await Notification.requestPermission();
+                // Una vez que el Service Worker esté listo, activamos el botón
+                document.getElementById('notificar').addEventListener('click', async () => {
+                    if (!("Notification" in window)) {
+                        alert("Las notificaciones no son compatibles con tu navegador.");
+                        return;
+                    }
 
-    if (permiso === "granted") {
-        navigator.serviceWorker.ready.then(registration => {
-            registration.active.postMessage({ type: 'SHOW_NOTIFICATION' });
-        });
-    } else {
-        alert("No podemos enviarte notificaciones sin tu permiso.");
-    }
-});
+                    const permiso = await Notification.requestPermission();
+                    if (permiso === "granted") {
+                        registration.active.postMessage({ type: 'SHOW_NOTIFICATION' });
+                    } else {
+                        alert("No podemos enviarte notificaciones sin tu permiso.");
+                    }
+                });
+
+            })
+            .catch((error) => {
+                console.error('Error al registrar el Service Worker:', error);
+            });
+    });
+}
