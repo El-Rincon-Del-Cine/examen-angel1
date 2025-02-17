@@ -36,14 +36,37 @@ var cacheFiles = [
 ];
 
 self.addEventListener('install', function(e) {
-    console.log('Service Worker: Instalado');
+    console.log('Service Worker: Instalando...');
+
     e.waitUntil(
-        caches.open(CACHE_NAME).then(function(cache) {
-            console.log('Service Worker: Cache abierto');
-            return cache.addAll(cacheFiles);
-        })
+        caches.open(CACHE_NAME)
+            .then(async function(cache) {
+                console.log('Service Worker: Caché abierto', CACHE_NAME);
+
+                // Usamos Promise.all con fetch() para ver cuál archivo falla
+                return Promise.all(
+                    cacheFiles.map(async (file) => {
+                        try {
+                            const response = await fetch(file);
+                            if (!response.ok) throw new Error('Error ${response.status} en ${file}');
+                            await cache.put(file, response);
+                            console.log('Cacheado: ${file}');
+                        } catch (error) {
+                            console.error('No se pudo cachear: ${file}', error);
+                        }
+                    })
+                );
+            })
+            .then(() => {
+                console.log('Service Worker: Todos los archivos procesados');
+                self.skipWaiting();
+            })
+            .catch(err => {
+                console.error('Service Worker: Error al abrir la caché', err);
+            })
     );
 });
+
 
 self.addEventListener('activate', function(e) {
     console.log('Service Worker: Activado');
