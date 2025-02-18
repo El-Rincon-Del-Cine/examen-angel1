@@ -4,15 +4,15 @@ if ('serviceWorker' in navigator) {
             .then((registration) => {
                 console.log('Service Worker registrado', registration.scope);
 
-                // Verifica si las notificaciones están permitidas
-                if (Notification.permission === "granted") {
-                    registration.active?.postMessage({ type: 'SHOW_NOTIFICATION' });
-                } else if (Notification.permission !== "denied") {
+                // Solicita permiso para las notificaciones al cargar la página
+                if (Notification.permission === "default") {
                     Notification.requestPermission().then(permission => {
                         if (permission === "granted") {
                             registration.active?.postMessage({ type: 'SHOW_NOTIFICATION' });
                         }
                     });
+                } else if (Notification.permission === "granted") {
+                    registration.active?.postMessage({ type: 'SHOW_NOTIFICATION' });
                 }
             })
             .catch((error) => {
