@@ -2,33 +2,35 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
             .then((registration) => {
-                console.log('Service Worker registrado con éxito:', registration.scope);
+                console.log('Service Worker registrado:', registration.scope);
 
-                navigator.serviceWorker.ready.then((reg) => {
-                    document.getElementById('notificar').addEventListener('click', async () => {
-                        if (!("Notification" in window)) {
-                            alert("Las notificaciones no son compatibles con tu navegador.");
-                            return;
-                        }
+                document.getElementById('notificar').addEventListener('click', async () => {
+                    console.log("Botón presionado. Pidiendo permisos...");
 
-                        const permiso = await Notification.requestPermission();
-                        if (permiso === "granted") {
-                            reg.active?.postMessage({ type: 'SHOW_NOTIFICATION' });
-                            //enviara una notifiación cada minuto dentro de la app
-                            setInterval(() => {
-                                if (navigator.serviceWorker.controller) {
-                                    navigator.serviceWorker.controller.postMessage({ type: 'SHOW_NOTIFICATION' });
-                                }
-                            }, 60000);
+                    const permiso = await Notification.requestPermission();
+                    console.log("Permiso recibido:", permiso);
 
-                        } else {
-                            alert("No podemos enviarte notificaciones sin tu permiso.");
-                        }
-                    });
+                    if (permiso === "granted") {
+                        console.log("Permiso concedido. Enviando notificación en 1 minuto...");
+
+                        setTimeout(() => {
+                            if (navigator.serviceWorker.controller) {
+                                console.log("Enviando notificación desde SW...");
+                                navigator.serviceWorker.controller.postMessage({ type: 'SHOW_NOTIFICATION' });
+                            } else {
+                                console.warn("No hay Service Worker activo.");
+                            }
+                        }, 60000); //60000ms son 1 minuto
+
+                    } else {
+                        console.warn("⚠Permiso denegado.");
+                        alert("No podemos enviarte notificaciones sin tu permiso.");
+                    }
                 });
+
             })
             .catch((error) => {
-                console.error('Error al registrar el Service Worker:', error);
+                console.error('Error al registrar el SW:', error);
             });
     });
 }
