@@ -104,12 +104,14 @@ self.addEventListener('fetch', function(e) {
     );
 });
 
-self.addEventListener('message', event => {
-    if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-        self.registration.showNotification('Bienvenido a La Taverna del Café', {
-            body: '¿Sabías que una buena lectura va acompañada de algo relajante?',
-            icon: './img/icono1.png',
-            badge: './img/icono1.png'
-        });
-    }
-});
+setInterval(() => {
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
+        if (clients.length > 0) {
+            self.registration.showNotification("¡Hola bienvenido a la Tvaerna del café!", {
+                body: "Esperamos que estés disfrutando de nuestra página y productos.",
+                icon: "./img/icono1.png",
+                badge: "./img/icono2.png"
+            });
+        }
+    });
+}, 30000);
